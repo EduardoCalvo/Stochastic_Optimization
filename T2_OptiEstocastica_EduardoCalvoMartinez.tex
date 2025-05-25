@@ -1,0 +1,256 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel} % idioma
+
+\textheight=23.5cm \textwidth=18cm \topmargin=-2cm \oddsidemargin=-.75cm
+
+\usepackage{amsmath,amssymb,amsthm,latexsym,mathtools}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{array}
+\usepackage{booktabs} 
+% no tocar nada de aqui
+\usepackage{enumerate} 
+\usepackage{graphicx}
+\usepackage[backend=bibtex]{biblatex} 
+\usepackage[hidelinks]{hyperref}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\setlength{\parskip}{1ex}
+
+%detalles del encabezado 
+\lhead{Optimización estocástica\\ Tarea 2} %izquierda
+\rhead{Eduardo Calvo Martínez} % derecha
+\chead{Departamento de Matemáticas} % centro
+
+\theoremstyle{definition}
+\newtheorem{lem}{Lema}
+\DeclareMathOperator{\gra}{\text{Graf}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\li}{\liminf_{n\to \infty}}
+\newcommand{\ls}{\limsup_{n\to \infty}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\D}{\mathfrak{D}}
+\newcommand{\QED}{\hfill $\blacksquare$}
+\newcommand{\eej}{\hfill $\square$}
+\DeclarePairedDelimiter{\paren}{(}{)}
+    \DeclarePairedDelimiter{\set}{\lbrace}{\rbrace}
+    \DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+    \DeclarePairedDelimiter{\interval}{[}{]}
+    \DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+    \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\ang}{\langle}{\rangle}
+\decimalpoint
+%Cajas colores
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+\usepackage{multicol}
+\usepackage{listings}
+\lstset{
+    language=C,                 
+    basicstyle=\ttfamily,       
+    keywordstyle=\color{blue},  % Palabras clave generales (int, return...)
+    keywordstyle={[2]\color{teal}},  % Tipos de datos (int, float, char...)
+    keywordstyle={[3]\color{orange}}, % Estructuras de control (for, if, while...)
+    keywordstyle={[4]\color{purple}}, % Nombres de funciones
+    commentstyle=\color{gray},  % Comentarios
+    stringstyle=\color{red},    % Cadenas de texto
+    identifierstyle=\color{black}, % Variables y nombres genéricos
+    morekeywords={[2]int, float, char, double, void, long, short}, % Tipos de datos
+    morekeywords={[3]for, while, if, else, switch, case, return}, % Estructuras de control
+    morekeywords={[4]main, printf, scanf, suma}, % Nombres de funciones
+    frame=single,               
+    breaklines=true,            
+    captionpos=b                
+}
+
+
+
+%%%%%%%%%%%%%%%%
+\definecolor{ablue}{rgb}{0.94, 0.97, 1.0}
+\definecolor{bblue}{rgb}{0.95, 0.96, 1.0}
+\definecolor{qblue}{rgb}{0.52, 0.52, 1.0}
+
+\newenvironment{ej}[1]
+    { \begin{mdframed}[backgroundcolor=bblue] \itshape \text{Ejercicio }\text{#1 }. \ }
+    {  \end{mdframed} }
+    
+\newenvironment{df}[1]
+    { \begin{mdframed}[backgroundcolor=ablue] \itshape \text{Definición }\text{#1}. \ }
+    {  \end{mdframed} } 
+    
+\newenvironment{sol}
+    {\textit{Solución:}}
+    {\medskip}
+    
+\newenvironment{dem}
+    {\textit{Demostración: }}
+    {\medskip}
+    
+\newenvironment{teo}
+    {\textbf{\textit{Teorema:}}}
+    {\medskip}
+    
+\renewcommand{\qed}{\textcolor{qblue}{\hfill\ensuremath{\blacksquare}}}
+
+\renewcommand{\eej}{\textcolor{qblue}{\hfill\ensuremath{\square}}}
+%%%%%%%%%%%%%%
+
+\title{Tarea}
+\author{kapioma.villarreal}
+
+\begin{document}
+\thispagestyle{empty} %sirve para que esta página no tenga encabezado
+\noindent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\large  \begin{center}
+\textbf{\LARGE Tarea 2}
+\end{center} 
+ Universidad de Guanajuato \hfill \large  Optimización estocástica\\
+Eduardo Calvo Martínez \hfill \today\\
+\noindent\rule{18cm}{1.5pt}
+\normalsize
+\subsection*{Heurística constructiva}
+\noindent 
+En esta tarea se buscaba comparar la eficiencia de aplicar una búsqueda incremental usando una solución inicial generada aleatoriamente y una solución generada por alguna heúristica constructiva. Para este caso nosotros usamos la heurística para el TSP llamada "Farthest Insertion", el procedimiento es iniciar en un nodo arbitario y luego insertar nuevos nodos en nuestra solución parcial hasta conseguir una solución completa del problema. Para elegir que punto es el que vamos a insertar, buscamos el punto tal que 
+\[\max_{v\in V\setminus T} {\min}^{\abs{T}}_{i=1} \paren*{d(v, v_i)+d(v_{i+1},v) - d(v_i, v_{i+1})},\]
+Para $V$ el conjunto de nodos y $T$ nuestra solución parcial. La minimización de la suma de distancias nos asegura que insertemos al nuevo nodo en la posición donde se afecta menos al costo, mientras que la maximización nos hace encargarnos primero de los peores nodos. En pseudocódigo es el siguiente
+\begin{algorithm}
+\caption{Farthest Insertion}
+\begin{algorithmic}[1]
+    \Procedure{farthest\_Insertion}{$distances$}
+        \State Elegimos (aleatoriamente) un nodo incial $v_1$ y lo agregamos a la solución
+        \State Elegimos el segundo nodo como el más lejano al inicial y lo agregamos
+        \While{$V\setminus T\neq\varnothing$}
+        \State Elegimos el nodo $v$ como el más lejano a $T$
+        \State Buscamos la posición $i$ donde se minimiza $ \paren*{d(v, v_i)+d(v_{i+1},v) - d(v_i, v_{i+1})}$
+        \State Insertamos el nodo $v$ en la posición $i$ de nuestra solución
+        \EndWhile
+    \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\noindent Con esta heurística es que generamos la solución con la que inicia la evaluación incremental.
+
+\subsection*{Evaluación incremental}
+\noindent La evaluación incremental se efectuó mediante el algoritmo \textbf{sthocastic hill climbing} el cual vimos en clase, para esto debemos de revisar los vecinos (distancia \textit{2opt}) de nuestra solución actual y tomar el primero que nos muestre una mejoría en nuestra función objetivo. Dado que calcular todos los vecinos es demasiado caro en memoria, entonces usamos descriptores, en nuestro problema un vecino es aquella solución que tiene dos aristas distintas y para generar estos vecinos en nuestra representación basta con invertir un segmento del vector que representa la solución. 
+
+\noindent Esto es, si tenemos la solución dada por el vector \lstinline|[1,5,2,6,7,3,9,4,8]| entonces si invertimos el segmento que va de \lstinline|4| a \lstinline|5| tenemos el vector \lstinline|[1,4,9,3,7,6,2,5,8]| el cual representa casi la misma solución que antes, con la diferencia que la arista $a_{1,5}$ se cambió por la arista $a_{1,4}$ y la arista $a_{4,8}$ se cambió por la arista $a_{5,8}$. Esto nos dice que basta con guardar dos enteros \lstinline|i| y \lstinline|j| los cuales nos indican el segmento del arreglo que hay que invertir, además para calcular el coste de nuestro vecino basta con restar el valor de las dos aristas eliminadas y sumar el costo de las nuevas al costo de nuestra solución. 
+
+\noindent En nuestro código en lugar de generar toda la lista de descriptores lo que hicimos es generar un descriptor aleatorio mientras no hayamos encontrado una mejora en el coste. Si el descriptor no representaba una mejora lo guardamos en un \lstinline|set| para registrar que ya hemos evaluado ese descriptor. Al momento de generar nuevas soluciones tenemos que verificar en nuestro \lstinline|set| que no se hubiera evaluado ese descriptor, en cuanto encontremos un vecino que mejora, generamos el vecino y lo cambiamos por la solución actual e iniciamos de nuevo, ahora sobre el vecino. El algoritmo termina cuando no hay algún vecino que mejore.
+
+\subsection*{Tablas compartivas}
+\noindent A continuación tenemos estadísticos de los tiempos (segundos) de procesamiento de las 50 evaluaciones incrementales que se ejecutaron para cada instancia. Hay una tabla para las evaluaciones cuya solución inicial está dada por la heurística y dada de manera aleatoria
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    	\hline
+        \textbf{Estadístico} & \textbf{Instancia d493} & \textbf{Instancia d657} &\textbf{Instancia dsj1000} \\ 
+    	\hline
+    	\multicolumn{4}{|c|}{\textbf{Heurística}} \\
+        \hline
+        Mínimo  & 6.9021  & 15.22247 & 43.09763\\  
+        \hline
+        Máximo  & 19.62105  & 32.781 & 92.77232\\  
+        \hline
+        Promedio & 12.1276828  & 21.7140396 & 63.04339\\
+    	\hline
+    	\multicolumn{4}{|c|}{\textbf{Aleatoria}} \\
+        \hline
+        Mínimo  & 9.5845  & 16.85526 & 56.21322\\  
+        \hline
+        Máximo  & 20.90617  & 36.28331 & 93.7943\\  
+        \hline
+        Promedio & 13.4757182  & 25.156231 & 68.90129	\\    
+        \hline
+    \end{tabular}
+    \caption{Comparación de tiempos}
+    \label{tab:estadisticos2}
+\end{table}
+
+\noindent En las siguientes tablas tenemos estadísticos ahora del fitness dados por las dos maneras de generar instancias iniciales y la Tarea 1
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    	\hline
+        \textbf{Estadístico} & \textbf{Instancia d493} & \textbf{Instancia d657} &\textbf{Instancia dsj1000} \\ 
+        \hline
+    	\multicolumn{4}{|c|}{\textbf{Tarea 1}} \\
+        \hline
+        Mínimo & 403036  & 780010 & 517621000\\ 
+    	\hline
+        \multicolumn{4}{|c|}{\textbf{Heurística}} \\
+        \hline
+        Mínimo  & 37639  & 53371  & 20693425\\  
+        \hline
+        Máximo  & 38877  & 54803 & 21292312\\  
+        \hline
+        Promedio & 38232.02  & 54154.1 & 21001319.28\\  
+    	\hline
+    	\multicolumn{4}{|c|}{\textbf{Aleatoria}} \\
+        \hline
+        Mínimo  & 37910  & 52909 & 20737636\\  
+        \hline
+        Máximo  & 40720 & 56160 & 601150955\\  
+        \hline
+        Promedio & 39019.8  & 54874.92 & 21357934.48\\  
+        \hline
+    \end{tabular}
+    \caption{Comparación de fitness}
+    \label{tab:estadisticos2}
+\end{table}
+\noindent Los boxplot de cada .txt con soluciones para cada instancia son los siguientes
+
+\begin{figure}[h]
+    \centering
+   \subfigure[Heurística]
+	{\includegraphics[scale=.4]{d493.png}}
+	\quad\quad
+	\subfigure[Aleatoria]
+	{\includegraphics[scale=.4]{d493Rand.png}}
+    \caption{BoxPlots de la instancia d493.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+   \subfigure[Heurística]
+	{\includegraphics[scale=.4]{d657.png}}
+	\quad\quad
+	\subfigure[Aleatoria]
+	{\includegraphics[scale=.4]{d657Rand.png}}
+    \caption{BoxPlots de la instancia d657.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \subfigure[Heurística]
+	{\includegraphics[scale=.4]{dsj1000.png}}
+	\quad\quad
+	\subfigure[Aleatoria]
+	{\includegraphics[scale=.4]{dsj1000Rand.png}}
+    \caption{BoxPlots de la instancia dsj1000.}
+\end{figure}
+
+
+
+
+\subsection*{Conclusiones}
+\noindent Como podemos ver, el uso de la heurística se ve reflejado en costos mucho menores, estamos hablando de que los costos con la heurística son en promedio más pequeños que con la generación aleatoria además de que el tiempo de procesamiento es menor con la heurística que con la solución aleatoria. Por lo que por ahora usar la heurística parece darnos una mejora en la búsqueda sobre el espacio de soluciones.
+
+\end{document}
