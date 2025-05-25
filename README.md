@@ -1,14 +1,14 @@
 # Stochastic_Optimization
 
-## Solución Estocástica al Problema del Viajante (TSP)
+## Stochastic Optimization for the Traveling Salesman Problem (TSP)
 
-Este repositorio contiene el código desarrollado como parte del curso de Optimización Estocástica. El objetivo principal fue diseñar e implementar desde cero una solución al **Problema del Viajante (TSP)** para instancias de tamaño considerable, utilizando métodos inspirados en técnicas evolutivas y metaheurísticas estocásticas.
+This repository contains the code I developed as part of a **Stochastic Optimization** course project. The goal was to design and implement a solution to the **Traveling Salesman Problem (TSP)**, capable of handling relatively large instances, using stochastic and evolutionary-inspired techniques.
 
-Todo el código y las ideas aquí presentadas son de mi autoría. El curso actuó únicamente como guía general en cuanto a las herramientas y enfoques disponibles, pero tanto la formulación del enfoque como la implementación fueron desarrolladas íntegramente por mí.
+All the code and ideas in this project are entirely my own. The course provided general guidance on available tools and methodologies, but the design, implementation, and experimentation were done independently.
 
-### Características principales
+### Key Features
 
-- Resolución del TSP en instancias de tamaño medio a grande.
-- Algoritmos escritos completamente desde cero.
-- Inspiración en enfoques evolutivos, pero con implementación y ajustes propios.
-- Código modular y documentado.
+- Solves medium to large TSP instances.
+- Fully original implementation from scratch.
+- Inspired by evolutionary and stochastic methods, with customized design.
+- Modular, readable, and well-documented codebase.
